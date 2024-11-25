@@ -60,3 +60,10 @@ Zbiór pomocniczych funkcji, które mogą być wielokrotnie używane w różnych
 
 7. **pipes/**
 Folder przechowuje niestandardowe pipe'y, które przetwarzają dane w szablonach HTML, np. formatowanie tekstu czy filtrowanie list.
+
+## Użyte technologie/biblioteki ##
+
+1. **Angular v17**
+2. **RXJS**
+3. **Angular material**
+4. **Jasmine/Karma**
