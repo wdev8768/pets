@@ -10,13 +10,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatButtonModule} from '@angular/material/button';
 
-import { filter, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
-import { PetsService } from '../../../services/api/pets.service';
 import { IPet } from '../../../interfaces/pets.interface';
 import { PetStatus } from '../../../enum/pets.enum';
 import { PetsFiltersComponent } from './filters/pets-filters.component';
 import { PetsFormComponent } from '../form/pets-form.component';
+import { PetsFacadeService } from '../../../services/pets-facade.service';
 
 @Component({
   selector: 'app-pets-list',
@@ -49,13 +49,14 @@ export class PetsListComponent implements OnDestroy {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
-    private petsService: PetsService,
+    private petsFacadeService: PetsFacadeService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private router: Router,
   ) {}
 
   ngOnInit(): void {
+    this.onChangePetsList();
     this.initFiltersTable();
     this.loadPets();
   }
@@ -70,17 +71,7 @@ export class PetsListComponent implements OnDestroy {
   }
 
   public showAddForm(editedPet?: IPet): void {
-    const modalRef = this.dialog.open(PetsFormComponent, { width: '450px', data: editedPet });
-    const sub = modalRef.afterClosed().pipe(filter(val => val)).subscribe(
-      (data) => {
-        if (editedPet) {
-          this.updatePetInList(data);
-          return;
-        }
-        this.addNewPetToList(data);
-      },
-    );
-    this.ComponentSubsc.add(sub);
+    this.dialog.open(PetsFormComponent, { width: '450px', data: editedPet })
   }
 
   public onFilterStatusChange(status: PetStatus): void {
@@ -101,13 +92,14 @@ export class PetsListComponent implements OnDestroy {
 
   public loadPets(): void {
     this.isLoading = true;
-    const sub = this.petsService.getPetsByStatus(this.filterStatus).subscribe({
-      next: (pets) => {
-        this.dataSource.data = pets;
+    const sub = this.petsFacadeService.getPets(this.filterStatus).subscribe({
+      next: () => {
         this.isLoading = false;
         this.isErrorGetPetsList = false;
       },
-      error: () => this.onErrorGetPetsList(),
+      error: () => {
+        this.onErrorGetPetsList();
+      }
     });
     this.ComponentSubsc.add(sub);
   }
@@ -119,14 +111,9 @@ export class PetsListComponent implements OnDestroy {
   public deletePet(id: number): void {
     const confirmAction = confirm('Are you sure you want to delete this pet?');
     if (confirmAction) {
-      const sub = this.petsService.deletePet(id).subscribe({
-        next: () => {
-          this.showSnackBar('Pet deleted successfully.');
-          this.loadPets();
-        },
-        error: () => {
-          this.showSnackBar('Failed to delete pet.');
-        },
+      const sub = this.petsFacadeService.deletePet(id).subscribe({
+        next: () => this.showSnackBar('Pet deleted successfully.'),
+        error: () => this.showSnackBar('Failed to delete pet.'),
       });
       this.ComponentSubsc.add(sub);
     }
@@ -134,23 +121,6 @@ export class PetsListComponent implements OnDestroy {
 
   public viewDetails(pet: IPet): void {
     this.router.navigate([`/pet/${pet.id}`]);
-  }
-
-  private addNewPetToList(pet: IPet): void {
-    const currentData = this.dataSource.data;
-    currentData.unshift({ ...pet });
-    this.dataSource.data = currentData;
-    this.showSnackBar('Successfully added.');
-  }
-
-  private updatePetInList(pet: IPet): void {
-    const currentData = this.dataSource.data;
-    const index = currentData.findIndex(item => item.id === pet.id);
-    if (index !== -1) {
-      currentData[index] = { ...currentData[index], ...pet };
-      this.dataSource.data = [...currentData];
-      this.showSnackBar('Successfully edited.');
-    }
   }
 
   private showSnackBar(message: string): void {
@@ -175,4 +145,8 @@ export class PetsListComponent implements OnDestroy {
     this.dataSource.data = [];
   }
 
+  private onChangePetsList(): void {
+    const sub = this.petsFacadeService.pets$.subscribe(data => this.dataSource.data = data);
+    this.ComponentSubsc.add(sub);
+  }
 }

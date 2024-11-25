@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,9 +15,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { PetStatus } from '../../../enum/pets.enum';
 import { ITag } from '../../../interfaces/tags.interface';
-import { PetsService } from '../../../services/api/pets.service';
 import { IPet, IPetNew } from '../../../interfaces/pets.interface';
 import { generateID } from '../../../utils/generate-id';
+import { PetsFacadeService } from '../../../services/pets-facade.service';
 
 @Component({
   selector: 'app-pets-form',
@@ -49,8 +49,9 @@ export class PetsFormComponent {
     @Inject(MAT_DIALOG_DATA) public PET_DATA_EDITED: IPet,
     public dialogRef: MatDialogRef<PetsFormComponent>,
     private fb: FormBuilder,
-    private petsService: PetsService,
+    private petsFacadeService: PetsFacadeService,
     private snackBar: MatSnackBar,
+    private changeDetRef: ChangeDetectorRef,
   ) {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -108,14 +109,14 @@ export class PetsFormComponent {
   }
 
   private addNewPet(pet: IPetNew): void {
-    this.petsService.addPet(pet).subscribe({
+    this.petsFacadeService.addPet(pet).subscribe({
       next: (response) => this.onSuccess(response),
       error: () => this.onErrorUpdatePet(),
     });
   }
 
   private updatePet(pet: IPetNew): void {
-    this.petsService.updatePet({...pet, id: this.PET_DATA_EDITED.id}).subscribe({
+    this.petsFacadeService.updatePet({...pet, id: this.PET_DATA_EDITED.id}).subscribe({
       next: (response) => this.onSuccess(response),
       error: () => this.onErrorUpdatePet(),
     });
@@ -130,6 +131,7 @@ export class PetsFormComponent {
       duration: 5000,
     });
     this.isLoading = false;
+    this.changeDetRef.markForCheck();
   }
 
   private initEditedPet(): void {
