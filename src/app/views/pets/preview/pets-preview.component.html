@@ -1,0 +1,27 @@
+<div class="container">
+    <mat-progress-spinner *ngIf="isLoading; else preview" mode="indeterminate" diameter="24"></mat-progress-spinner>
+
+    <ng-template #preview>
+        <div class="container__card">
+            <h1>Name: {{recordData?.name}}</h1>
+            <span>Status: {{recordData?.status}}</span>
+            <span>Category: {{recordData?.category?.name}}</span>
+    
+            <mat-chip-set>
+            @for (tag of recordData?.tags; let idx = $index; track tag.id) {
+                <mat-chip>
+                    {{tag.name}}
+                </mat-chip>
+            }
+            </mat-chip-set>
+
+            <div class="container__card__images">
+                <img 
+                    *ngFor="let image of recordData?.photoUrls"
+                    [src]="image | validateImage | async"
+                    alt="image"
+                >
+            </div>
+        </div>
+    </ng-template>
+</div>

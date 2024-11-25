@@ -1,0 +1,16 @@
+<div class="filters">
+    <mat-form-field>
+      <mat-label>Status</mat-label>
+      <mat-select [value]="status" (selectionChange)="onStatusChange($event.value)">
+        <mat-option [value]="PETS_FILTER_STATUS.Available">Available</mat-option>
+        <mat-option [value]="PETS_FILTER_STATUS.Pending">Pending</mat-option>
+        <mat-option [value]="PETS_FILTER_STATUS.Sold">Sold</mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput [(ngModel)]="name" (ngModelChange)="onNameChange($event)" />
+    </mat-form-field>
+</div>
+  

@@ -1,0 +1,24 @@
+.container-modal {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 1.5rem;
+
+    &__form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+
+        .title-chip {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+                    line-clamp: 1;
+            -webkit-box-orient: vertical;
+            max-width: 120px;
+        }
+    }
+}

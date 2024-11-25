@@ -1,0 +1,78 @@
+<div class="container-modal">
+  <h1>{{ PET_DATA_EDITED ? 'Edit' : 'Add +' }}</h1>
+
+  <form class="container-modal__form" [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" required />
+      <mat-error *ngIf="form.get('name')?.invalid">
+        The first name is required and must have at least 3 characters.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option *ngFor="let status of statuses" [value]="status">{{ status }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Category</mat-label>
+        <input matInput formControlName="category" />
+    </mat-form-field>
+  
+    <mat-form-field>
+        <mat-label>Photos</mat-label>
+        <mat-chip-grid #chipGridPhoto aria-label="Enter photo">
+            @for (photo of photoUrls.value; let idx = $index; track photo) {
+                <mat-chip-row
+                    (removed)="removePhotoUrl(idx)"
+                    [editable]="true"
+                >
+                    <span class="title-chip">{{ photo }}</span>
+                    <button matChipRemove>
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </mat-chip-row>
+            }
+            <input
+                placeholder="New url photo..."
+                [matChipInputFor]="chipGridPhoto"
+                [matChipInputAddOnBlur]="true"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                (matChipInputTokenEnd)="addPhotoUrl($event)"
+            />
+        </mat-chip-grid>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Tags</mat-label>
+        <mat-chip-grid #chipGridTag aria-label="Enter tag">
+            @for (tag of tags.value; let idx = $index; track tag.id) {
+                <mat-chip-row
+                    (removed)="removeTag(idx)"
+                    [editable]="true"
+                >
+                    <span class="title-chip">{{ tag.name }}</span>
+                    <button matChipRemove>
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </mat-chip-row>
+            }
+            <input
+                placeholder="New tag..."
+                [matChipInputFor]="chipGridTag"
+                [matChipInputAddOnBlur]="true"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                (matChipInputTokenEnd)="addTag($event)"
+            />
+        </mat-chip-grid>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="isLoading">
+        {{ isLoading ? 'Saving...' : 'Save' }}
+    </button>
+    <mat-progress-spinner *ngIf="isLoading" mode="indeterminate" diameter="24"></mat-progress-spinner>
+  </form>
+</div>
