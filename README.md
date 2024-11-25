@@ -55,8 +55,8 @@ Folder zawiera pliki z typami i interfejsami, które definiują struktury danych
 
 5. **services/**
 Folder odpowiedzialny za logikę biznesową i interakcję z API.
-`api/ - Zawiera serwisy realizujące komunikację z API, np. pets.service.ts wykonujący żądania HTTP związane z danymi zwierząt.`
-`pets-fascade.service.ts - Serwis zarządzający stanem aplikacji w obszarze listy zwierząt. Abstrahuje logikę pomiędzy komponentami a API.`
+``api/ - Zawiera serwisy realizujące komunikację z API, np. pets.service.ts wykonujący żądania HTTP związane z danymi zwierząt.``
+``pets-fascade.service.ts - Serwis zarządzający stanem aplikacji w obszarze listy zwierząt. Abstrahuje logikę pomiędzy komponentami a API.``
 
 6. **utils/**
 Zbiór pomocniczych funkcji, które mogą być wielokrotnie używane w różnych częściach aplikacji, np. formatowanie danych czy operacje na kolekcjach.
