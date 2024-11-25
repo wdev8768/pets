@@ -17,6 +17,8 @@
 ## Opis architektury aplikacji Angular ##
 
 **Struktura katalogów**
+
+```
 src/
 ├── app/
 │   ├── views/
@@ -31,6 +33,7 @@ src/
 │   │   ├── api/
 │   ├── utils/
 │   ├── pipes/
+```
 
 **Szczegółowy opis struktury**
 
