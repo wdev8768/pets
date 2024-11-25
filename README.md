@@ -3,12 +3,12 @@
 ## Wymagania wstępne
 
 1. **Node.js** (wersja LTS lub nowsza) - Pobierz i zainstaluj z [Node.js](https://nodejs.org/).
-2. **Angular CLI** (wersja zgodna z projektem) - Zainstaluj globalnie za pomocą polecenia: npm install -g @angular/cli
+2. **Angular CLI** (wersja zgodna z projektem) - Zainstaluj globalnie za pomocą polecenia: ```npm install -g @angular/cli```
 
 ## Uruchomienie projektu i budowanie wersji produkcyjnej
-1. **Instalacja bibliotek** W katalogu głównym projektu użyj: npm install
-2. **Uruchomienie** W katalogu głównym projektu użyj: ng serve
-3. **Build** W katalogu głównym projektu użyj: ng build
+1. **Instalacja bibliotek** W katalogu głównym projektu użyj: ```npm install```
+2. **Uruchomienie** W katalogu głównym projektu użyj: ```ng serve```
+3. **Build** W katalogu głównym projektu użyj: `ng build`
 
 ## Testy jednostkowe
 1. **Testy** W katalogu głównym projektu użyj: ng test
