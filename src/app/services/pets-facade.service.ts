@@ -50,6 +50,10 @@ export class PetsFacadeService {
       );
   }
 
+  public getPetById(id: number): Observable<IPet> {
+    return this.petsService.getPetById(id);
+  }
+
   private onAddNewPet(pet: IPet): void {
     this._pets$.next([pet, ...this._pets$.value]);
   }

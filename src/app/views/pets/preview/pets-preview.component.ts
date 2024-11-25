@@ -8,9 +8,9 @@ import { MatChipsModule } from '@angular/material/chips';
 
 import { Subscription } from 'rxjs';
 
-import { PetsService } from '../../../services/api/pets.service';
 import { IPet } from '../../../interfaces/pets.interface';
 import { ValidateImagePipe } from '../../../pipes/validate-image-url.pipe';
+import { PetsFacadeService } from '../../../services/pets-facade.service';
 
 @Component({
   selector: 'app-pets-preview',
@@ -33,7 +33,7 @@ export class PetsPreviewComponent implements OnInit, OnDestroy {
 
   constructor(
     private activeRoute: ActivatedRoute,
-    private petsService: PetsService,
+    private petsFacadeService: PetsFacadeService,
     private router: Router,
     private changeDetRef: ChangeDetectorRef,
   ) {}
@@ -47,7 +47,7 @@ export class PetsPreviewComponent implements OnInit, OnDestroy {
   }
 
   private getRecordData(): void {
-    const sub = this.petsService.getPetById(this.id).subscribe({
+    const sub = this.petsFacadeService.getPetById(this.id).subscribe({
       next: (response) => {
         this.recordData = response;
         this.isLoading = false;

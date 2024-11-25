@@ -16,11 +16,9 @@
             </mat-chip-set>
 
             <div class="container__card__images">
-                <img 
-                    *ngFor="let image of recordData?.photoUrls"
-                    [src]="image | validateImage | async"
-                    alt="image"
-                >
+                @for (image of recordData?.photoUrls; track image) {
+                    <img [src]="image | validateImage | async" alt="image">
+                }
             </div>
         </div>
     </ng-template>
