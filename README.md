@@ -1,27 +1,62 @@
-# App
+# Instrukcja uruchomienia projektu Angular
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.1.
+## Wymagania wstępne
 
-## Development server
+1. **Node.js** (wersja LTS lub nowsza) - Pobierz i zainstaluj z [Node.js](https://nodejs.org/).
+2. **Angular CLI** (wersja zgodna z projektem) - Zainstaluj globalnie za pomocą polecenia: npm install -g @angular/cli
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Uruchomienie projektu i budowanie wersji produkcyjnej
+1. **Instalacja bibliotek** W katalogu głównym projektu użyj: npm install
+2. **Uruchomienie** W katalogu głównym projektu użyj: ng serve
+3. **Build** W katalogu głównym projektu użyj: ng build
 
-## Code scaffolding
+## Testy jednostkowe
+1. **Testy** W katalogu głównym projektu użyj: ng test
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+## Opis architektury aplikacji Angular ##
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+**Struktura katalogów**
+src/
+├── app/
+│   ├── views/
+│   │   ├── pets/
+│   │   │   ├── form/
+│   │   │   ├── preview/
+│   │   │   ├── list/
+│   │   │   │   ├── filters/
+│   ├── enums/
+│   ├── interfaces/
+│   ├── services/
+│   │   ├── api/
+│   ├── utils/
+│   ├── pipes/
 
-## Running unit tests
+**Szczegółowy opis struktury**
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+1. **views/**
+Folder zawiera komponenty widoków aplikacji, podzielone na podfoldery odpowiadające różnym funkcjonalnościom.
 
-## Running end-to-end tests
+2. **views/pets/**
+Sekcja aplikacji związana z zarządzaniem danymi dotyczącymi zwierząt (pets). Zawiera podfoldery odpowiadające różnym funkcjonalnościom:
+/form - Komponent odpowiadający za edycję i dodawanie zwierząt.
+/preview - Komponent wyświetlający szczegółowe informacje o wybranym zwierzęciu.
+/list - Komponent odpowiedzialny za wyświetlanie listy zwierząt. Dodatkowo zawiera:
+    /list/filters - Podkomponent implementujący filtry dla listy zwierząt.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+3. **enums/**
+Folder zawiera pliki z enumeracjami (Enum), które są wykorzystywane w różnych częściach aplikacji do przechowywania stałych wartości.
 
-## Further help
+4. **interfaces/**
+Folder zawiera pliki z typami i interfejsami, które definiują struktury danych używane w aplikacji.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+5. **services/**
+Folder odpowiedzialny za logikę biznesową i interakcję z API.
+api/ - Zawiera serwisy realizujące komunikację z API, np. pets.service.ts wykonujący żądania HTTP związane z danymi zwierząt.
+pets-fascade.service.ts - Serwis zarządzający stanem aplikacji w obszarze listy zwierząt. Abstrahuje logikę pomiędzy komponentami a API.
+
+6. **utils/**
+Zbiór pomocniczych funkcji, które mogą być wielokrotnie używane w różnych częściach aplikacji, np. formatowanie danych czy operacje na kolekcjach.
+
+7. **pipes/**
+Folder przechowuje niestandardowe pipe'y, które przetwarzają dane w szablonach HTML, np. formatowanie tekstu czy filtrowanie list.
