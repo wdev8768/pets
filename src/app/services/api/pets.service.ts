@@ -13,7 +13,7 @@ import { PetStatus } from '../../enum/pets.enum';
 })
 export class PetsService {
 
-  private readonly apiUrl = 'https://petstore.swagger.io/v2/pet';
+  private readonly apiUrl = 'https://petstore.swagger.io/v2/pet'; // env
 
   constructor(private http: HttpClient) {}
 

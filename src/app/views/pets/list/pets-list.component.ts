@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -9,14 +9,14 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatButtonModule} from '@angular/material/button';
-
-import { Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs';
 
 import { IPet } from '../../../interfaces/pets.interface';
 import { PetStatus } from '../../../enum/pets.enum';
 import { PetsFiltersComponent } from './filters/pets-filters.component';
 import { PetsFormComponent } from '../form/pets-form.component';
 import { PetsFacadeService } from '../../../services/pets-facade.service';
+import { Destroyable } from '../../../utils/destroyable';
 
 @Component({
   selector: 'app-pets-list',
@@ -33,10 +33,10 @@ import { PetsFacadeService } from '../../../services/pets-facade.service';
   ],
   templateUrl: './pets-list.component.html',
   styleUrl: './pets-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PetsListComponent implements OnDestroy {
+export class PetsListComponent extends Destroyable {
   public readonly displayedColumns: string[] = ['id', 'name', 'category', 'status', 'actions'];
-  private readonly ComponentSubsc = new Subscription();
 
   public dataSource = new MatTableDataSource<IPet>([]);
 
@@ -53,7 +53,9 @@ export class PetsListComponent implements OnDestroy {
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private router: Router,
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.onChangePetsList();
@@ -64,10 +66,6 @@ export class PetsListComponent implements OnDestroy {
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-  }
-
-  ngOnDestroy(): void {
-    this.ComponentSubsc.unsubscribe();
   }
 
   public showAddForm(editedPet?: IPet): void {
@@ -92,16 +90,17 @@ export class PetsListComponent implements OnDestroy {
 
   public loadPets(): void {
     this.isLoading = true;
-    const sub = this.petsFacadeService.getPets(this.filterStatus).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.isErrorGetPetsList = false;
-      },
-      error: () => {
-        this.onErrorGetPetsList();
-      }
-    });
-    this.ComponentSubsc.add(sub);
+    this.petsFacadeService.getPets(this.filterStatus)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.isErrorGetPetsList = false;
+        },
+        error: () => {
+          this.onErrorGetPetsList();
+        }
+      });
   }
 
   public editPet(pet: IPet): void {
@@ -111,11 +110,14 @@ export class PetsListComponent implements OnDestroy {
   public deletePet(id: number): void {
     const confirmAction = confirm('Are you sure you want to delete this pet?');
     if (confirmAction) {
-      const sub = this.petsFacadeService.deletePet(id).subscribe({
-        next: () => this.showSnackBar('Pet deleted successfully.'),
-        error: () => this.showSnackBar('Failed to delete pet.'),
-      });
-      this.ComponentSubsc.add(sub);
+      this.petsFacadeService.deletePet(id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(
+        {
+          next: () => this.showSnackBar('Pet deleted successfully.'),
+          error: () => this.showSnackBar('Failed to delete pet.'),
+        }
+      );
     }
   }
 
@@ -146,7 +148,8 @@ export class PetsListComponent implements OnDestroy {
   }
 
   private onChangePetsList(): void {
-    const sub = this.petsFacadeService.pets$.subscribe(data => this.dataSource.data = data);
-    this.ComponentSubsc.add(sub);
+    this.petsFacadeService.pets$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(data => this.dataSource.data = data);
   }
 }

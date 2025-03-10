@@ -1,16 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {MatCardModule} from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
-
-import { Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs';
 
 import { IPet } from '../../../interfaces/pets.interface';
 import { ValidateImagePipe } from '../../../pipes/validate-image-url.pipe';
 import { PetsFacadeService } from '../../../services/pets-facade.service';
+import { Destroyable } from '../../../utils/destroyable';
 
 @Component({
   selector: 'app-pets-preview',
@@ -20,7 +20,7 @@ import { PetsFacadeService } from '../../../services/pets-facade.service';
   styleUrl: './pets-preview.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PetsPreviewComponent implements OnInit, OnDestroy {
+export class PetsPreviewComponent extends Destroyable implements OnInit {
 
   public isLoading: boolean = true;
   public recordData?: IPet;
@@ -29,25 +29,23 @@ export class PetsPreviewComponent implements OnInit, OnDestroy {
     return Number(this.activeRoute.snapshot.params['id']);
   }
   
-  private readonly ComponentSubsc = new Subscription();
-
   constructor(
     private activeRoute: ActivatedRoute,
     private petsFacadeService: PetsFacadeService,
     private router: Router,
     private changeDetRef: ChangeDetectorRef,
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.getRecordData();
   }
 
-  ngOnDestroy(): void {
-    this.ComponentSubsc.unsubscribe();
-  }
-
   private getRecordData(): void {
-    const sub = this.petsFacadeService.getPetById(this.id).subscribe({
+    this.petsFacadeService.getPetById(this.id)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
       next: (response) => {
         this.recordData = response;
         this.isLoading = false;
@@ -58,7 +56,6 @@ export class PetsPreviewComponent implements OnInit, OnDestroy {
         this.router.navigate(['/']);
       }
     });
-    this.ComponentSubsc.add(sub);
   }
 
 }

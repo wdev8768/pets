@@ -60,11 +60,4 @@ describe('PetsPreviewComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
   });
 
-  it('should unsubscribe from subscriptions on destroy', () => {
-    const unsubscribeSpy = spyOn(component['ComponentSubsc'], 'unsubscribe');
-
-    component.ngOnDestroy();
-
-    expect(unsubscribeSpy).toHaveBeenCalled();
-  });
 });

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -51,7 +51,6 @@ export class PetsFormComponent {
     private fb: FormBuilder,
     private petsFacadeService: PetsFacadeService,
     private snackBar: MatSnackBar,
-    private changeDetRef: ChangeDetectorRef,
   ) {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -131,7 +130,6 @@ export class PetsFormComponent {
       duration: 5000,
     });
     this.isLoading = false;
-    this.changeDetRef.markForCheck();
   }
 
   private initEditedPet(): void {

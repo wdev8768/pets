@@ -92,11 +92,4 @@ describe('PetsListComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/pet/1']);
   });
 
-  it('should unsubscribe from all subscriptions on destroy', () => {
-    const unsubscribeSpy = spyOn(component['ComponentSubsc'], 'unsubscribe');
-
-    component.ngOnDestroy();
-
-    expect(unsubscribeSpy).toHaveBeenCalled();
-  });
 });

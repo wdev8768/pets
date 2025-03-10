@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -13,7 +13,8 @@ import { PetStatus } from '../../../../enum/pets.enum';
   standalone: true,
   imports: [CommonModule, FormsModule, MatFormFieldModule, MatSelectModule, MatInputModule],
   templateUrl: './pets-filters.component.html',
-  styleUrl: './pets-filters.component.scss'
+  styleUrl: './pets-filters.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PetsFiltersComponent {
   @Input() status!: PetStatus;
